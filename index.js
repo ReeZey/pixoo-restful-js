@@ -11,38 +11,11 @@ let counter = 0;
 let initalBuffer = new Array(64 * 64).fill([86, 34, 112]);
 
 (async () => {
-
 	console.log("hej marcus, jag ser att du ska hacka");
 
 	await resetCounter();
 	await sendGIF(Buffer.from(initalBuffer.flat()), 1, 64, 0);
-
-	//recursive();
-	
-
-	//console.log(Buffer.from(buffer).toString('base64'))
 })();
-
-/*
-let prev = Date.now();
-async function recursive() {
-
-	let promise = new Promise(function(resolve, reject) {    
-		setTimeout(() => {
-			console.log("> " + (Date.now() - prev));
-			prev = Date.now();
-	
-			buff = new Array(64 * 64).fill([Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255)]);
-			sendBuffer();
-			resolve();
-		}, 200);
-	});
-
-	await promise;
-
-	recursive();
-}
-*/
 
 let num;
 let width;
@@ -55,8 +28,6 @@ net.createServer(socket => {
 	console.log("client connected");
 
 	socket.on('data', data => {
-		//console.log(data);
-
 		if(data.length == 4){
 			num = data.readUInt8();
 			width = data.readUint8(1);
@@ -73,12 +44,6 @@ net.createServer(socket => {
 			console.log("got picture: " + picoffset);
 			sendGIF(data, num, width, speed);
 		}
-
-		//console.log({buff2, num, width, speed});
-
-		//sendGIF(buff2, num, width, speed);
-		//buff = new Array(64 * 64).fill([Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255)]);
-		//sendBuffer();
 	});
 
 	socket.on('end', data => {
@@ -91,23 +56,18 @@ net.createServer(socket => {
 }).listen(3000);
 
 async function resetCounter() {
-	//console.log("reset");
-
 	counter = 0;
 	return await resetHttpGifId();
 }
 
 async function post(data) {
-	//console.log("post");
-	await fetch(`http://${ip}/post`, {
+	return await fetch(`http://${ip}/post`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify(data)
 	});
-	
-	//console.log(await response.text());
 }
 
 async function sendGIF(buffer, num, width, speed) {
@@ -133,14 +93,14 @@ async function resetHttpGifId() {
 }
 
 //send image
-async function sendHttpGif(picNum, picWidth, picOffset, picId, picSpeed, picData) {
+async function sendHttpGif(PicNum, PicWidth, PicOffset, PicID, PicSpeed, PicData) {
 	return await post({
 		Command: 'Draw/SendHttpGif',
-		PicNum: picNum,
-		PicWidth: picWidth,
-		PicOffset: picOffset,
-		PicID: picId,
-		PicSpeed: picSpeed,
-		PicData: picData
+		PicNum,
+		PicWidth,
+		PicOffset,
+		PicID,
+		PicSpeed,
+		PicData
 	})
 }
